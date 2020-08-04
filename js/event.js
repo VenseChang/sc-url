@@ -2,8 +2,9 @@ REGEX = /q\=\%40(?<key>[a-zA-Z0-9]+)(\+(?<val>[a-zA-Z0-9]*(\+[a-zA-Z0-9]*)*))?\&
 REPLACE_VALUE_REGEX = /(?!\s)(\$\d+)*/g
 
 urls = {
+    "music": "http://music.youtube.com/",
     "github": "https://github.com/VenseChang",
-    "music": "http://music.youtube.com/"
+    "repo": "https://github.com/VenseChang/$1"
 }
 
 document.addEventListener('DOMContentLoaded', function(){
