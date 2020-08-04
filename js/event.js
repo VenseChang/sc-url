@@ -1,10 +1,12 @@
-REGEX = /q\=\%40(?<key>[a-zA-Z0-9]+)(\+(?<val>[a-zA-Z0-9]*(\+[a-zA-Z0-9]*)*))?\&/i
+REGEX = /q\=\%40(?<key>[a-zA-Z0-9]+)(\+(?<val>[a-zA-Z0-9\-\_\.]*(\+[a-zA-Z0-9\-\_\.]*)*))?\&/i
 REPLACE_VALUE_REGEX = /(?!\s)(\$\d+)*/g
 
 urls = {
     "music": "http://music.youtube.com/",
     "github": "https://github.com/VenseChang",
-    "repo": "https://github.com/VenseChang/$1"
+    "repo": "https://github.com/VenseChang/$1",
+    "po": "https://shopline.atlassian.net/browse/PO-$1",
+    "jira": "https://shopline.atlassian.net/browse/$1-$2"
 }
 
 document.addEventListener('DOMContentLoaded', function(){
