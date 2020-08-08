@@ -26,8 +26,11 @@
         <header class="rounded-t border-b shadow px-4 py-2 flex justify-between items-center">
             <span class="text-2xl font-bold">SC</span>
             <div class="text-xl">
-                <span class="mx-2 cursor-pointer">import</span>
-                <span class="mx-2 cursor-pointer">export</span>
+                <label class="mx-2 cursor-pointer">
+                    import
+                    <input type="file" id="file" class="hidden" accept='.json' data-action="change->setting#import">
+                </label>
+                <label class="mx-2 cursor-pointer" data-action="click->setting#export">export</label>
             </div>
         </header>
 

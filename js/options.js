@@ -11,7 +11,7 @@
             const sc  = this.shortcutTarget
             const url = this.urlTarget
             settings[sc.value.trim()] = url.value.trim()
-            this.localSave()
+            this.save()
 
             sc.value = ''
             url.value = ''
@@ -21,7 +21,7 @@
             const sc = el.target.dataset.params
             if ( confirm(`Are you sure to remove this shortcut(${sc})?`) ) {
                 delete settings[sc]
-                this.localSave()
+                this.save()
             }
         }
 
@@ -40,9 +40,37 @@
             this.reloadPage(targets)
         }
 
-        localSave = () => {
+        import = (e) => {
+            let files = e.target.files
+            if (files.length !== 1) return
+
+            let file = files.item(0)
+            var fr = new FileReader();
+            fr.onload = event => {
+                let res = event.target.result
+                settings = JSON.parse(res)
+                this.save()
+            }
+            fr.readAsText(file)
+            e.target.value = ''
+        }
+
+        export = () => {
+            if (Object.entries(settings).length === 0) {alert('The setting is empty!'); return;}
+
+            let dataStr = JSON.stringify(settings)
+            let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr)
+
+            let linkElement = document.createElement('a')
+            linkElement.setAttribute('href', dataUri)
+            linkElement.setAttribute('download', 'sc.json')
+            linkElement.click()
+        }
+
+        save = () => {
             this.reloadPage()
             chrome.storage.local.set({"settings": settings}, function() {})
+            chrome.storage.sync.set({"settings": settings}, function() {})
         }
 
         reloadPage = (ss) => {
@@ -70,6 +98,12 @@
             chrome.storage.local.get("settings", res => {
                 settings = res.settings
                 this.reloadPage()
+            })
+            chrome.storage.sync.get("settings", function(result) {
+                if (Object.entries(settings).length === 0) {
+                    settings = result.settings
+                    this.reloadPage()
+                }
             })
         }
     })
