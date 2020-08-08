@@ -1,13 +1,10 @@
 REGEX = /q\=\%40(?<key>[a-zA-Z0-9]+)(\+(?<val>[a-zA-Z0-9\-\_\.]*(\+[a-zA-Z0-9\-\_\.]*)*))?\&/i
 REPLACE_VALUE_REGEX = /(?!\s)(\$\d+)*/g
 
-urls = {
-    "music": "http://music.youtube.com/",
-    "github": "https://github.com/VenseChang",
-    "repo": "https://github.com/VenseChang/$1",
-    "po": "https://shopline.atlassian.net/browse/PO-$1",
-    "jira": "https://shopline.atlassian.net/browse/$1-$2"
-}
+let urls
+chrome.storage.local.get("settings", function(result) {
+    urls = result.settings
+})
 
 document.addEventListener('DOMContentLoaded', function(){
     const url = window.location.href

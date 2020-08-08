@@ -1,5 +1,5 @@
 {
-    "name": "Getting Started Example",
+    "name": "SC",
     "description": "Build an Extension!",
     "content_scripts": [
         {
@@ -8,11 +8,15 @@
             "js": ["js/event.js"]
         }
     ],
+    "options_page": "html/options.html",
     "icons": {
         "32": "images/link-32.png",
         "64": "images/link-64.png",
         "72": "images/link-72.png"
     },
+    "permissions": [
+      "storage"
+    ],
     "manifest_version": 2,
     "version": "1.0"
 }
