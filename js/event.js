@@ -2,8 +2,11 @@ REGEX = /q\=\%40(?<key>[a-zA-Z0-9]+)(\+(?<val>[a-zA-Z0-9\-\_\.]*(\+[a-zA-Z0-9\-\
 REPLACE_VALUE_REGEX = /(?!\s)(\$\d+)*/g
 
 let urls
-chrome.storage.local.get("settings", function(result) {
-    urls = result.settings
+chrome.storage.local.get("settings", res => {
+    urls = res.settings || {}
+
+    if (Object.entries(urls).length !== 0) return
+    chrome.storage.sync.get("settings", res => { urls = res.settings || {} })
 })
 
 document.addEventListener('DOMContentLoaded', function(){

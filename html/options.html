@@ -21,7 +21,7 @@
 </head>
 
 <body class="bg-gray-200">
-    <div data-controller="setting" class="shadow-md w-2/5 mx-auto my-2 border border-gray rounded bg-white"
+    <div data-controller="setting" class="shadow-md w-1/2 mx-auto my-2 border border-gray rounded bg-white"
         style="min-height: calc(100vh - 1.5rem);">
         <header class="rounded-t border-b shadow px-4 py-2 flex justify-between items-center">
             <span class="text-2xl font-bold">SC</span>
@@ -34,29 +34,27 @@
             </div>
         </header>
 
-        <div class="flex items-end my-2 py-2 px-4 ">
+        <form class="flex items-end my-2 py-2 px-4" data-action="submit->setting#add">
             <div class="w-1/6 mr-2">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="shortcut"> shortcut </label>
                 <input
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="shortcut" type="text" placeholder="music" data-target='setting.shortcut'>
+                    id="shortcut" type="text" placeholder="music" data-target='setting.shortcut' required='required'>
             </div>
 
             <div class="w-9/12 mx-2">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="url"> url </label>
                 <input
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="url" type="text" placeholder="https://music.youtube.com/" data-target='setting.url'>
+                    id="url" type="text" placeholder="https://music.youtube.com/" data-target='setting.url' required='required'>
             </div>
 
-            <div class="w-1/12 flex flex-row ml-2">
-                <button
-                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded h-10 flex justify-center items-center"
-                    data-action="click->setting#add">
+            <div class="w-1/12 flex flex-row justify-center ml-2">
+                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded h-10 flex justify-center items-center">
                     <span class="text-2xl"> + </span>
                 </button>
             </div>
-        </div>
+        </form>
 
         <hr class="border my-6 mx-4">
 
@@ -67,7 +65,7 @@
                 id="url" type="text" placeholder="shortcut / url" data-action="input->setting#filter" data-target="setting.filter">
         </div>
 
-        <table class="table-auto">
+        <table class="table-auto w-full">
             <thead>
                 <tr>
                     <th class="px-4 py-2 w-1/6">shortcut</th>

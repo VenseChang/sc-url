@@ -1,6 +1,6 @@
 {
     "name": "SC",
-    "description": "Build an Extension!",
+    "description": "An extension for easier redirect to target page!",
     "content_scripts": [
         {
             "matches": ["<all_urls>"],
@@ -12,7 +12,8 @@
     "icons": {
         "32": "images/link-32.png",
         "64": "images/link-64.png",
-        "72": "images/link-72.png"
+        "72": "images/link-72.png",
+        "128": "images/link-128.png"
     },
     "permissions": [
       "storage"

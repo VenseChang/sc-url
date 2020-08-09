@@ -7,9 +7,16 @@
             return [ 'shortcut', 'url', 'detail', 'filter' ]
         }
 
-        add = () => {
+        add = (event) => {
+            event.preventDefault()
             const sc  = this.shortcutTarget
             const url = this.urlTarget
+
+            if ( sc.value.trim() === '' || url.value.trim() === '' ) {
+                alert("shortcut or url can't be empty")
+                return
+            }
+
             settings[sc.value.trim()] = url.value.trim()
             this.save()
 
@@ -29,7 +36,7 @@
             let targets = {}
             const val = this.filterTarget.value.toLowerCase()
 
-            if (val === '') { this.reloadPage(); return; }
+            if (val === '') { this.reload(); return; }
 
             for (let sc in settings) {
                 if (sc.toLowerCase().includes(val) || settings[sc].toLowerCase().includes(val)) {
@@ -37,7 +44,7 @@
                 }
             }
 
-            this.reloadPage(targets)
+            this.reload(targets)
         }
 
         import = (e) => {
@@ -68,12 +75,12 @@
         }
 
         save = () => {
-            this.reloadPage()
+            this.reload()
             chrome.storage.local.set({"settings": settings}, function() {})
             chrome.storage.sync.set({"settings": settings}, function() {})
         }
 
-        reloadPage = (ss) => {
+        reload = (ss) => {
             let addBG = false
             this.detailTarget.innerHTML = ''
 
@@ -96,13 +103,14 @@
         // Stimulus Lifecycle
         initialize() {
             chrome.storage.local.get("settings", res => {
-                settings = res.settings
-                this.reloadPage()
+                settings = res.settings || {}
+                this.reload()
             })
-            chrome.storage.sync.get("settings", function(result) {
+            chrome.storage.sync.get("settings", res => {
                 if (Object.entries(settings).length === 0) {
-                    settings = result.settings
-                    this.reloadPage()
+                    settings = res.settings || {}
+                    chrome.storage.local.set({"settings": settings}, function() {})
+                    this.reload()
                 }
             })
         }
