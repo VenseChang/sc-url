@@ -86,15 +86,24 @@
 
             Object.keys(ss || settings).sort().forEach( sc => {
                 let content = ''
-                if(Array.isArray(settings[sc])) {
 
-                } else {
-                    content += `<tr class='${addBG ? 'bg-gray-100' : ''}'>`
-                    content += `<td class="border px-4 py-2 break-all">${sc}</td>`
-                    content += `<td class="border px-4 py-2 break-all">${settings[sc]}</td>`
-                    content += `<td class="border px-4 py-2 text-center"><button data-action="click->setting#delete" data-params="${sc}" class='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded'>Delete</button></td>`
-                    content += '</tr>'
-                }
+                content += '<div class="mx-4">'
+                content += '    <div class="font-bold text-lg">'
+                content += `        ${sc}`
+                content += '    </div>'
+                content += '    <div class="flex">'
+                content += '        <div class="w-1/6"> </div>'
+                content += '        <div class="w-4/6 break-all flex items-center text-sm">'
+                content += `            ${settings[sc]}`
+                content += '        </div>'
+                content += '        <div class="w-1/6 text-center flex">'
+                // content += `            <img data-action="click->setting#edit" data-params="${sc}" src='../images/edit.png' style='height: 24px; width: 24px;' class='mx-1 cursor-pointer' />`
+                content += `            <img data-action="click->setting#delete" data-params="${sc}" src='../images/trash.png' style='height: 24px; width: 24px;' class='mx-1 cursor-pointer' />`
+                content += '        </div>'
+                content += '    </div>'
+                content += '</div>'
+                content += '<hr class="border my-6 mx-4">'
+
                 this.detailTarget.innerHTML += content
                 addBG = !addBG
             })
