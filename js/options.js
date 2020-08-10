@@ -90,8 +90,8 @@
 
                 } else {
                     content += `<tr class='${addBG ? 'bg-gray-100' : ''}'>`
-                    content += `<td class="border px-4 py-2">${sc}</td>`
-                    content += `<td class="border px-4 py-2">${settings[sc]}</td>`
+                    content += `<td class="border px-4 py-2 break-all">${sc}</td>`
+                    content += `<td class="border px-4 py-2 break-all">${settings[sc]}</td>`
                     content += `<td class="border px-4 py-2 text-center"><button data-action="click->setting#delete" data-params="${sc}" class='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded'>Delete</button></td>`
                     content += '</tr>'
                 }
