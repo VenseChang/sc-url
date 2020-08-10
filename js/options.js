@@ -1,4 +1,5 @@
 (() => {
+    const REPLACE_VALUE_REGEX = /(?!\s)(\$\d+)*/g
     const app = Stimulus.Application.start()
     let   settings = {}
 
@@ -9,27 +10,27 @@
 
         add = (event) => {
             event.preventDefault()
-            const sc  = this.shortcutTarget
-            const url = this.urlTarget
 
-            if ( sc.value.trim() === '' || url.value.trim() === '' ) {
+            const sc  = this.shortcutTarget.value.trim()
+            const url = this.urlTarget.value.trim()
+
+            if ( sc === '' || url === '' ) {
                 alert("shortcut or url can't be empty")
                 return
             }
 
-            settings[sc.value.trim()] = url.value.trim()
+            if(settings[sc] === undefined) { settings[sc] = [] }
+
+            let oldUrl = settings[sc].find(u => this.matchUrl(u).length === this.matchUrl(url).length)
+            if ( oldUrl !== undefined && confirm(`Are you sure to replace 「${oldUrl}」 with 「${url}」?`) ) {
+                settings[sc] = settings[sc].filter(u => this.matchUrl(u).length !== this.matchUrl(url).length)
+            }
+
+            settings[sc].push(url)
             this.save()
 
-            sc.value = ''
-            url.value = ''
-        }
-
-        delete = (el) => {
-            const sc = el.target.dataset.params
-            if ( confirm(`Are you sure to remove this shortcut(${sc})?`) ) {
-                delete settings[sc]
-                this.save()
-            }
+            this.urlTarget.value = ''
+            this.shortcutTarget.value = ''
         }
 
         filter = () => {
@@ -38,13 +39,48 @@
 
             if (val === '') { this.reload(); return; }
 
-            for (let sc in settings) {
-                if (sc.toLowerCase().includes(val) || settings[sc].toLowerCase().includes(val)) {
-                    targets[sc] = settings[sc]
-                }
+            Object.keys(settings)
+                  .filter(sc => this.isInclude(sc, val) || settings[sc].filter(target => this.isInclude(target, val)).length > 0)
+                  .forEach(sc => {targets[sc] = settings[sc]})
+
+            for (let sc in targets) {
+                let new_targets = targets[sc].filter(target => this.isInclude(target, val))
+                if(new_targets.length > 0) { targets[sc] = new_targets }
             }
 
             this.reload(targets)
+        }
+
+        matchUrl = (url) => url.match(REPLACE_VALUE_REGEX).filter(v => v)
+
+        reload = (ss) => {
+            let targets = ss || settings
+            this.detailTarget.innerHTML = ''
+
+            Object.keys(targets).sort().forEach( sc => {
+                let content = ''
+
+                content += '<div class="mx-4">'
+                content += '    <div class="font-bold text-lg">'
+                content += `        ${sc}`
+                content += '    </div>'
+                targets[sc].forEach(target => {
+                    content += '    <div class="flex my-4">'
+                    content += '        <div class="w-1/6"> </div>'
+                    content += '        <div class="w-4/6 break-all flex items-center text-sm">'
+                    content += `            ${target}`
+                    content += '        </div>'
+                    content += '        <div class="w-1/6 text-center flex">'
+                    // content += `            <img data-action="click->setting#edit" data-params="${sc}" src='../images/edit.png' style='height: 24px; width: 24px;' class='mx-1 cursor-pointer' />`
+                    content += `            <img data-action="click->setting#delete" data-shortcut=${sc} data-params="${target}" src='../images/trash.png' style='height: 24px; width: 24px;' class='mx-1 cursor-pointer' />`
+                    content += '        </div>'
+                    content += '    </div>'
+                })
+                content += '</div>'
+                content += '<hr class="border my-6 mx-4">'
+
+                this.detailTarget.innerHTML += content
+            })
         }
 
         import = (e) => {
@@ -80,34 +116,17 @@
             chrome.storage.sync.set({"settings": settings}, function() {})
         }
 
-        reload = (ss) => {
-            let addBG = false
-            this.detailTarget.innerHTML = ''
-
-            Object.keys(ss || settings).sort().forEach( sc => {
-                let content = ''
-
-                content += '<div class="mx-4">'
-                content += '    <div class="font-bold text-lg">'
-                content += `        ${sc}`
-                content += '    </div>'
-                content += '    <div class="flex">'
-                content += '        <div class="w-1/6"> </div>'
-                content += '        <div class="w-4/6 break-all flex items-center text-sm">'
-                content += `            ${settings[sc]}`
-                content += '        </div>'
-                content += '        <div class="w-1/6 text-center flex">'
-                // content += `            <img data-action="click->setting#edit" data-params="${sc}" src='../images/edit.png' style='height: 24px; width: 24px;' class='mx-1 cursor-pointer' />`
-                content += `            <img data-action="click->setting#delete" data-params="${sc}" src='../images/trash.png' style='height: 24px; width: 24px;' class='mx-1 cursor-pointer' />`
-                content += '        </div>'
-                content += '    </div>'
-                content += '</div>'
-                content += '<hr class="border my-6 mx-4">'
-
-                this.detailTarget.innerHTML += content
-                addBG = !addBG
-            })
+        delete = (el) => {
+            const sc = el.target.dataset.shortcut
+            const target = el.target.dataset.params
+            if ( confirm(`Are you sure to remove target 「${target}」 from shortcut「${sc}」?`) ) {
+                settings[sc] = settings[sc].filter(t => t !== target)
+                if(settings[sc].length === 0) { delete settings[sc] }
+                this.save()
+            }
         }
+
+        isInclude = (item, target) => item.toLowerCase().includes(target)
 
         // Stimulus Lifecycle
         initialize() {
