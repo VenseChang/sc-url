@@ -1,4 +1,4 @@
-REGEX = /q\=\%40(?<key>[a-zA-Z0-9]+)(\+(?<val>[a-zA-Z0-9\-\_\.]*(\+[a-zA-Z0-9\-\_\.]*)*))?\&/i
+REGEX = /q\=\%40(?<key>[a-zA-Z0-9\-\_\.]+)(\+(?<val>[a-zA-Z0-9\-\_\.]*(\+[a-zA-Z0-9\-\_\.]*)*))?\&/i
 REPLACE_VALUE_REGEX = /(?!\s)(\$\d+)*/g
 
 let urls
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function(){
     key = key.toLowerCase()
 
     const keys = Object.keys(urls).map(k => k.toLowerCase())
-    let vals    = (val === undefined) ? undefined : val.split('+')
+    let vals    = (val === undefined) ? [] : val.split('+')
     let matches = urls[key].match(REPLACE_VALUE_REGEX).filter(v => v)
 
     if (matches.length === 0) {
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     if (vals.length !== matches.length) {
-        console.error('Count of provide values are not match url setting.')
+        alert('Count of provide values are not match url setting.')
         return
     }
 
